@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch|Async|Callback</title>
+    <style>
+        #responseText {
+            width: 50%;
+            margin: 2em auto;
+        }
+
+        button {
+            padding: 1em;
+            background-color: rgb(81, 13, 117);
+            border-radius: 5px;
+            border: 0;
+            color: white;
+        }
+        body{
+            background-color: black;
+        }
+        center{
+            margin-top: 5rem;
+        }
+
+    </style>
+</head>
+<body>
+    <center>
+        <button id="btn" st\yle="cursor: pointer;">Download</button>
+        <button id="playBtn".o;lx bbbbbbbbbbbbbbbbbbbb\\\\ style="cursor: pointer;">Play</button>
+        <div id="responseText"></div>
+    </center>
+
+    <script>
+        const downloadBtn = document.querySelector('#btn');
+        const playBtn = document.querySelector('#playBtn');
+        const resText = document.querySelector('#responseText');
+        let videoUrl;
+
+        downloadBtn.addEventListener('click', () => {
+            videoUrl = "https://static.videezy.com/system/resources/previews/000/008/443/original/Dark_Haired_Girl_confused_-what--_2.mp4";
+            resText.innerHTML = `<h2>Downloading video...</h2>`;
+            downloadBtn.style.cursor = 'not-allowed';
+            playBtn.style.cursor = 'not-allowed';
+            downloadVideoCallback(videoUrl, (error) => {
+                if (error) {
+                    resText.innerHTML = `<h2>Error while downloading video: ${error}</h2>`;
+                } else {
+                    resText.innerHTML = `<h2>Video Successfully Downloaded </h2>`;
+                    playBtn.style.display = 'inline-block';
+                    downloadBtn.style.cursor = 'pointer';
+                    playBtn.style.cursor = 'pointer';
+                }
+            });
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (videoUrl) {
+                playVideo(videoUrl);
+            } else {
+                resText.innerHTML = `<h2>You have to download the video.</h2>`;
+            }
+        });
+
+        function downloadVideoCallback(url, callback) {
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "video.mp4";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    callback(null);
+                })
+                .catch(error => callback(error));
+        }
+
+        function playVideo(url) {
+            const videoPlayer = document.createElement('video');
+            videoPlayer.src = url;
+            videoPlayer.controls = true;
+            resText.innerHTML = '';
+            resText.appendChild(videoPlayer);
+        }
+    </script>
+</body>
+</html>
+
+
